@@ -1,0 +1,25 @@
+{
+  "name": "simple-multiselect",
+  "version": "0.0.1",
+  "homepage": "https://github.com/kvarunsameer/simple-multiselect",
+  "description": "simple multi selction",
+  "main": "",
+  "keywords": [
+    "{{site.project_title}}",
+    "web-components"
+  ],
+  "authors": [
+    "kvarunsameer"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "^2.1.0"
+  }
+}

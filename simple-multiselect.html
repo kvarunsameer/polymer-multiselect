@@ -1,0 +1,74 @@
+<link rel="import" href="ask-selected.html" />
+<link rel="import" href="ask-unselected.html" />
+<dom-module id="simple-multiselect">
+    <template>
+    <style>
+</style>
+<div class="ask_container">
+	<div class="ask-multiselect">
+		<div class="ask-selected">
+			  <ask-head innerdata="{{selected}}"></ask-head>
+		</div>
+		<div class="ask-unselected">
+			<template is="dom-if" if={{enablesearch}}>
+			  <div class="table-filters">
+				<div class="search-filters">
+				  <span class="search-label">Search: </span>
+				  <input class="search-input" placeholder="search..." type="text" value="{{searchString::input}}" id="filter" />
+				</div>
+			  </div>
+			</template>
+			<ask-row innerdata="{{unselected}}"></ask-row>
+		</div>
+	</div>
+</div>
+  </template>
+
+    <script>
+        class askSimpleDataTables extends Polymer.Element {
+
+    static get is() { return 'simple-datatables'; }
+
+           constructor() {
+      super();
+    }
+    static get properties () {
+      return {
+        enablesearch:{
+            type: Boolean,
+            value: false,
+            notify: true,
+            reflectToAttribute: true
+        },
+        searchString : {
+            type :String
+        }
+      }
+    }
+    ready(){
+        super.ready();
+    }
+    _computeFilter(string) {
+        if (!string) {
+            return null;
+        }else {
+            if(typeof(string) == "number"){
+                string = string.toString().toLowerCase();
+            }
+            string = string.toLowerCase();
+                return function(item) {
+                var tempArray=[];
+                Object.keys(item).forEach(function(key,index) {
+                    if(item[key].toLowerCase().indexOf(string) != -1){
+                                tempArray.push("1");
+                    }     
+                    });
+                    return (tempArray.length == 0 ? false : true);
+
+                };
+            }
+        }
+}
+        window.customElements.define(askSimpleMultiSelect.is, askSimpleMultiSelect);
+    </script>
+</dom-module>
