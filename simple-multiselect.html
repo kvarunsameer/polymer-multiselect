@@ -3,71 +3,137 @@
 <dom-module id="simple-multiselect">
     <template>
     <style>
+    .ask_container {
+        width: 100%;
+        box-sizing: border-box;
+        height: 40px;
+        z-index: 999999999;
+        position: relative;
+    }
+    .ask-multiselect {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 5px 30px 5px 7px;
+        background: #eee;
+        border: solid 1px #e0e0e0;
+        float: left;
+        height: 100%;
+        position: relative;
+        cursor: pointer;
+    }
+    .ask-multiselect:after {
+        content: '';
+        width: 0;
+        height: 0;
+        position: absolute;
+        right: 10px;
+        top: 17px;
+        border-style: solid;
+        border-width: 5px;
+        border-color: #232323 transparent transparent transparent;
+    }
+    .ask-unselected {
+        position: absolute;
+        top: 100%;
+        left: -1px;
+        width: 100%;
+        height: 220px;
+        overflow: hidden;
+        background: #eee;
+        border: solid 1px #e0e0e0;
+        display: none;
+    }
+    .ask-multiselect.true .ask-unselected {
+        display: block;
+    }
 </style>
 <div class="ask_container">
-	<div class="ask-multiselect">
+	<div class$="ask-multiselect {{open}}" on-click="_toggle">
 		<div class="ask-selected">
-			  <ask-head innerdata="{{selected}}"></ask-head>
+			  <ask-selected innerdata="{{selected}}"></ask-selected>
 		</div>
 		<div class="ask-unselected">
-			<template is="dom-if" if={{enablesearch}}>
-			  <div class="table-filters">
-				<div class="search-filters">
-				  <span class="search-label">Search: </span>
-				  <input class="search-input" placeholder="search..." type="text" value="{{searchString::input}}" id="filter" />
-				</div>
-			  </div>
-			</template>
-			<ask-row innerdata="{{unselected}}"></ask-row>
+			<ask-unselected selectdata="{{msdata}}"></ask-unselected>
 		</div>
 	</div>
 </div>
+<template is="dom-repeat" items="{{selectdata}}">
+    <div class="selected"><span>{{item.technology}}</span><span class="close">x</span></div>
+    </template>
   </template>
 
     <script>
-        class askSimpleDataTables extends Polymer.Element {
+        class askSimpleMultiSelect extends Polymer.Element {
 
-    static get is() { return 'simple-datatables'; }
+    static get is() { return 'simple-multiselect'; }
 
            constructor() {
       super();
     }
+    _toggle(){
+        //console.log(this.open);
+        this.open = !this.open;
+    }
     static get properties () {
       return {
+        msdata:  {
+          type: Array,
+          value: [
+                    {"ID":"1", "technology":"Google Polymer","status":"selected"},
+                    {"ID":"2", "technology":"AngularJs"},
+                    {"ID":"3", "technology":"CSS","status":"selected"},
+                    {"ID":"4", "technology":"HTML"},
+                    {"ID":"5", "technology":"JavaScript"},
+                    {"ID":"6", "technology":"BackBone","status":"selected"},
+                    {"ID":"7", "technology":"ReactJs"},
+                    {"ID":"8", "technology":"Jquery","status":"selected"},
+                ],
+          reflectToAttribute: true,
+        },
+        open: {
+            type: Boolean,
+            value: false
+        },
         enablesearch:{
             type: Boolean,
             value: false,
             notify: true,
             reflectToAttribute: true
         },
+        selectdata : {
+            type : Array,
+            value: [],
+            notify: true,
+            reflectToAttribute: true
+        },
         searchString : {
             type :String
+        },
+        unselected : {
+            type :Array
+        },
+        unselected : {
+            type :Array
         }
       }
     }
     ready(){
         super.ready();
+        console.log()
+        var nameArrays = Object.create(null);
+        var msdata = this.msdata;
+        var selected= [];
+        var unselected = [];
+        msdata.forEach(function(technology) {
+            if (technology["status"] == "selected") {
+                selected.push(technology)
+            } else {
+                unselected.push(technology)
+            }
+        });
+        this.selected = selected;
+        this.unselected = unselected;
     }
-    _computeFilter(string) {
-        if (!string) {
-            return null;
-        }else {
-            if(typeof(string) == "number"){
-                string = string.toString().toLowerCase();
-            }
-            string = string.toLowerCase();
-                return function(item) {
-                var tempArray=[];
-                Object.keys(item).forEach(function(key,index) {
-                    if(item[key].toLowerCase().indexOf(string) != -1){
-                                tempArray.push("1");
-                    }     
-                    });
-                    return (tempArray.length == 0 ? false : true);
-
-                };
-            }
-        }
 }
         window.customElements.define(askSimpleMultiSelect.is, askSimpleMultiSelect);
     </script>
