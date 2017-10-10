@@ -1,6 +1,14 @@
 <dom-module id="ask-selected">
     <template>
     <style>
+        .ask_selected {
+            float: left;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0 0px 0 0;
+            height: 100%;
+            overflow: hidden;
+        }
     .selected {
         display: inline-block;
         padding: 4px 6px;
@@ -12,26 +20,28 @@
     }
     .selected span {
         display: inline-block;
-        vertical-align: middle;
     }
     .selected span.close {
+        cursor: pointer;
         display: inline-block;
     font-size: 10px;
     margin-left: 4px;
+    padding: 0px !important;
     background: rgba(255, 0, 0, 0.7);
     width: 12px;
     height: 12px;
-    vertical-align: middle;
-    line-height: 12px;
+    line-height: 1;
     text-align: center;
     color: #fff;
     border-radius: 50px;
     }
 </style>
 <div class="ask_selected">
-<template is="dom-repeat" items="{{innerdata}}">
-    <div class="selected"><span>{{item.technology}}</span><span class="close">x</span></div>
+<template is="dom-repeat" id="mylist" items="{{innerdata}}">
+    <template is="dom-if" if="{{_show(item.status)}}">
+    <div class="selected" on-click="_changestatus"><span>{{item.technology}}</span><span class="close">x</span></div>
     </template>
+</template>
 </div>
   </template>
 
@@ -43,19 +53,34 @@
            constructor() {
       super();
     }
+    _show(data){
+        return data == 'selected';
+    }
+    _changestatus(e){
+        //console.log(e.model.item.status);
+       // e.model.item.status = "selected";
+       e.model.set('item.status', '');
+        //this.open = !this.open;
+        this.$.mylist.render();
+        //return this.selectdata;
+    }
+    selecteddata(newValue, oldValue) {
+    console.log(newValue);
+    console.log(oldValue);
+  }
     static get properties () {
       return {
         innerdata : {
             type : Array,
             value: [],
             notify: true,
-            reflectToAttribute: true
+            reflectToAttribute: true,
+            observer: 'selecteddata',
         }
       }
     }
     ready(){
         super.ready();
-        console.log(this.innerdata);
     }
 }
         window.customElements.define(askSelected.is, askSelected);

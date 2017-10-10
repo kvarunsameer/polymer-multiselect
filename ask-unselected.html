@@ -45,6 +45,7 @@
         padding: 10px 25px 10px 10px;
         box-sizing: border-box;
         font-size: 13px;
+        cursor: pointer;
         border-bottom: solid 1px #e0e0e0;
         position: relative;
     }
@@ -70,8 +71,11 @@
             </template>
 <div class="ask_data">
 <ul>
-<template is="dom-repeat" items="{{selectdata}}" filter="{{_computeFilter(searchString)}}">
+<template is="dom-repeat" id="mylist" items="{{selectdata}}" filter="{{_computeFilter(searchString)}}" if="{{item.status}}">
+    
+        <template is="dom-if" if="{{_show(item.status)}}">
     <li on-click="_changestatus" class$="{{item.status}}">{{item.technology}}</li>
+</template>
 </template>
 </ul>
 </div>
@@ -81,15 +85,32 @@
     <script>
         class askUnselected extends Polymer.Element {
 
-    static get is() { return 'ask-unselected'; }
+            static get is() { return 'ask-unselected'; }
+            static get observers() {
+    return []
+  }
 
-           constructor() {
+  _show(data){
+        return data != 'selected';
+    }
+  
+    constructor() {
       super();
     }
     _changestatus(e){
-        console.log(e.model.item.status);
-        e.model.item.status = "selected";
-        console.log(e.model.item.status);
+        var msdata = this.selectdata;
+        var selected= [];
+        msdata.forEach(function(technology) {
+            if (technology["status"] == "selected") {
+                selected.push(technology)
+            }
+        });
+        if(selected.length < this.restricted ) {
+            e.model.set('item.status', 'selected');
+            this.$.mylist.render();
+        } else {
+            alert('skills cannot be more than '+this.restricted);
+        }
     }
     static get properties () {
       return {
@@ -104,6 +125,18 @@
             value: true,
             notify: true,
             reflectToAttribute: true
+        },
+        open:{
+            type: Boolean,
+            value: false,
+            notify: true,
+            reflectToAttribute: true
+        },
+        restricted:{
+            type: Number,
+            notify: true,
+            reflectToAttribute: true,
+            value: 10
         },
         searchString : {
             type :String

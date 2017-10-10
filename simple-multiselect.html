@@ -10,27 +10,41 @@
         z-index: 999999999;
         position: relative;
     }
+    .ask-selected {
+        height: 100%;
+        overflow: hidden;
+        float: left;
+        width: calc(100% - 20px);
+        box-sizing: border-box;
+    }
     .ask-multiselect {
         width: 100%;
         box-sizing: border-box;
-        padding: 5px 30px 5px 7px;
+        padding: 5px 5px 5px 5px;
         background: #eee;
         border: solid 1px #e0e0e0;
         float: left;
         height: 100%;
         position: relative;
+    }
+    .ask-multiselect .arrow_close {
+        float: right;
+        position: relative;
+        width: 20px;
+        height: 100%;
+        text-align: center;
         cursor: pointer;
     }
-    .ask-multiselect:after {
+    .ask-multiselect .arrow_close:after {
         content: '';
         width: 0;
         height: 0;
         position: absolute;
-        right: 10px;
-        top: 17px;
+        left: calc(50% - 2px);
+        top: calc(50% - 2px);
         border-style: solid;
         border-width: 5px;
-        border-color: #232323 transparent transparent transparent;
+        border-color:  #232323 transparent transparent transparent;
     }
     .ask-unselected {
         position: absolute;
@@ -48,18 +62,19 @@
     }
 </style>
 <div class="ask_container">
-	<div class$="ask-multiselect {{open}}" on-click="_toggle">
+        <!-- <template is="dom-repeat" items="{{msdata}}">
+                <div>{{item.technology}} - {{item.status}}</div>
+            </template> -->
+	<div class$="ask-multiselect {{open}}">
 		<div class="ask-selected">
-			  <ask-selected innerdata="{{selected}}"></ask-selected>
-		</div>
+			  <ask-selected innerdata="{{msdata}}"></ask-selected>
+        </div>
 		<div class="ask-unselected">
-			<ask-unselected selectdata="{{msdata}}"></ask-unselected>
-		</div>
+			<ask-unselected open="{{open}}" restricted="{{restrict}}" selectdata="{{msdata}}"></ask-unselected>
+        </div>
+        <span class="arrow_close" on-click="_toggle"></span>
 	</div>
 </div>
-<template is="dom-repeat" items="{{selectdata}}">
-    <div class="selected"><span>{{item.technology}}</span><span class="close">x</span></div>
-    </template>
   </template>
 
     <script>
@@ -67,6 +82,7 @@
 
     static get is() { return 'simple-multiselect'; }
 
+    static get observers() { return ['selecteddata(msdata[*][status])']; }
            constructor() {
       super();
     }
@@ -74,25 +90,30 @@
         //console.log(this.open);
         this.open = !this.open;
     }
+    
     static get properties () {
       return {
         msdata:  {
-          type: Array,
-          value: [
+            type: Array,
+            value: [
                     {"ID":"1", "technology":"Google Polymer","status":"selected"},
                     {"ID":"2", "technology":"AngularJs"},
-                    {"ID":"3", "technology":"CSS","status":"selected"},
+                    {"ID":"3", "technology":"CSS"},
                     {"ID":"4", "technology":"HTML"},
                     {"ID":"5", "technology":"JavaScript"},
-                    {"ID":"6", "technology":"BackBone","status":"selected"},
+                    {"ID":"6", "technology":"BackBone"},
                     {"ID":"7", "technology":"ReactJs"},
-                    {"ID":"8", "technology":"Jquery","status":"selected"},
+                    {"ID":"8", "technology":"Jquery"},
                 ],
-          reflectToAttribute: true,
+            notify: true,
+            reflectToAttribute: true,
+            observer: '_selecteddata'
         },
         open: {
             type: Boolean,
-            value: false
+            value: false,
+            notify: true,
+            reflectToAttribute: true
         },
         enablesearch:{
             type: Boolean,
@@ -100,23 +121,25 @@
             notify: true,
             reflectToAttribute: true
         },
-        selectdata : {
-            type : Array,
-            value: [],
-            notify: true,
-            reflectToAttribute: true
-        },
-        searchString : {
-            type :String
+        hi : {
+            type :String,
         },
         unselected : {
             type :Array
         },
-        unselected : {
-            type :Array
+        restrict : {
+            type :Number
         }
       }
     }
+    _selecteddata(newValue, oldValue) {
+        console.log('New:'+newValue);
+    console.log(oldValue);
+  }
+    selecteddata(newValue, oldValue) {
+    console.log('New:'+newValue);
+    console.log(oldValue);
+  }
     ready(){
         super.ready();
         console.log()
@@ -134,7 +157,25 @@
         this.selected = selected;
         this.unselected = unselected;
     }
+    
 }
+var that = this;
+console.log(that);
+window.addEventListener("click", function(e){
+//console.log(that);
+    var target = Polymer.Gestures.findOriginalTarget(e).parentNode;
+    //console.log(Polymer.Gestures.findOriginalTarget(e).parentNode);
+    //console.log(Polymer.Gestures.findOriginalTarget(e));
+    // while (target != that && target != document.body) {
+    //     target = Polymer.dom(target).node.parentElement;
+    // }
+
+    // if (target == that) {
+    //      console.log("inside element");
+    // } else {
+    //      console.log("outside element");
+    // }
+});
         window.customElements.define(askSimpleMultiSelect.is, askSimpleMultiSelect);
     </script>
 </dom-module>
