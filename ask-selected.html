@@ -71,6 +71,7 @@
        e.model.set('item.status', '');
         //this.open = !this.open;
         this.$.mylist.render();
+        this._placeholder();
         //this.placeholder = false;
         //return this.selectdata;
     }
@@ -109,11 +110,11 @@
             }
         });
         console.log('selected -->'+selected.length);
-        // if(selected.length > 0 ) {
-        //     this.placeholder = false;
-        // } else {
-        //     this.placeholder = true;
-        // }
+        if(selected.length > 0 ) {
+            this.placeholder = false;
+        } else {
+            this.placeholder = true;
+        }
     }
     ready(){
         super.ready();
