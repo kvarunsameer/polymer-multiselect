@@ -11,12 +11,18 @@
         }
     .selected {
         display: inline-block;
-        padding: 4px 6px;
+        padding: 3px 6px;
         font-size: 12px;
         color: #232323;
         background: #fff;
         box-shadow: 0px 0px 1px rgba(0,0,0,.3);
         margin: 1px;
+    }
+    .placeholder {
+        display: inline-block;
+        padding: 4px 4px;
+        font-size: 14px;
+        color: #808080;
     }
     .selected span {
         display: inline-block;
@@ -37,6 +43,9 @@
     }
 </style>
 <div class="ask_selected">
+<template is="dom-if" if="{{placeholder}}">
+        <div class="placeholder">{{placeholdertext}}</div>
+    </template>
 <template is="dom-repeat" id="mylist" items="{{innerdata}}">
     <template is="dom-if" if="{{_show(item.status)}}">
     <div class="selected" on-click="_changestatus"><span>{{item.technology}}</span><span class="close">x</span></div>
@@ -50,7 +59,7 @@
 
     static get is() { return 'ask-selected'; }
 
-           constructor() {
+        constructor() {
       super();
     }
     _show(data){
@@ -62,11 +71,12 @@
        e.model.set('item.status', '');
         //this.open = !this.open;
         this.$.mylist.render();
+        //this.placeholder = false;
         //return this.selectdata;
     }
     selecteddata(newValue, oldValue) {
-    console.log(newValue);
-    console.log(oldValue);
+    console.log('Select Component Newval -> '+newValue);
+    console.log('Select Component Newval -> '+oldValue);
   }
     static get properties () {
       return {
@@ -76,11 +86,38 @@
             notify: true,
             reflectToAttribute: true,
             observer: 'selecteddata',
+        },
+        placeholder: {
+            type: Boolean,
+            value: true,
+            notify: true,
+            reflectToAttribute: true,
+        },
+        placeholdertext: {
+            type: String,
+            value: 'Please Select'
         }
       }
     }
+    _placeholder(){
+        var msdata = this.innerdata;
+        console.log("msdata seleced component --> "+msdata);
+        var selected= [];
+        msdata.forEach(function(technology) {
+            if (technology["status"] == "selected") {
+                selected.push(technology)
+            }
+        });
+        console.log('selected -->'+selected.length);
+        // if(selected.length > 0 ) {
+        //     this.placeholder = false;
+        // } else {
+        //     this.placeholder = true;
+        // }
+    }
     ready(){
         super.ready();
+        this._placeholder();
     }
 }
         window.customElements.define(askSelected.is, askSelected);

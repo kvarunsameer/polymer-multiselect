@@ -108,6 +108,7 @@
         if(selected.length < this.restricted ) {
             e.model.set('item.status', 'selected');
             this.$.mylist.render();
+            this.placeholder2 = false;
         } else {
             alert('skills cannot be more than '+this.restricted);
         }
@@ -123,6 +124,11 @@
         enablesearch:{
             type: Boolean,
             value: true,
+            notify: true,
+            reflectToAttribute: true
+        },
+        placeholder2:{
+            type: Boolean,
             notify: true,
             reflectToAttribute: true
         },

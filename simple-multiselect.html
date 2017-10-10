@@ -67,10 +67,10 @@
             </template> -->
 	<div class$="ask-multiselect {{open}}">
 		<div class="ask-selected">
-			  <ask-selected innerdata="{{msdata}}"></ask-selected>
+			  <ask-selected innerdata="{{msdata}}" placeholder="{{placeholder1}}" placeholdertext="{{placeholdertext}}"></ask-selected>
         </div>
 		<div class="ask-unselected">
-			<ask-unselected open="{{open}}" restricted="{{restrict}}" selectdata="{{msdata}}"></ask-unselected>
+			<ask-unselected open="{{open}}" placeholder2="{{placeholder1}}" restricted="{{restrict}}" selectdata="{{msdata}}"></ask-unselected>
         </div>
         <span class="arrow_close" on-click="_toggle"></span>
 	</div>
@@ -96,7 +96,7 @@
         msdata:  {
             type: Array,
             value: [
-                    {"ID":"1", "technology":"Google Polymer","status":"selected"},
+                    {"ID":"1", "technology":"Google Polymer"},
                     {"ID":"2", "technology":"AngularJs"},
                     {"ID":"3", "technology":"CSS"},
                     {"ID":"4", "technology":"HTML"},
@@ -109,6 +109,12 @@
             reflectToAttribute: true,
             observer: '_selecteddata'
         },
+        placeholder1: {
+            type: Boolean,
+            value: true,
+            notify: true,
+            reflectToAttribute: true,
+        },
         open: {
             type: Boolean,
             value: false,
@@ -120,6 +126,9 @@
             value: false,
             notify: true,
             reflectToAttribute: true
+        },
+        placeholdertext: {
+            type :String,
         },
         hi : {
             type :String,
